@@ -1,0 +1,15 @@
+- name: install slave container
+  docker_container:
+    name: jenkins-slave1
+    image: jenkins-slave
+    detach: yes
+    ports:
+      - "2220:22"
+    volumes:
+      - jenkins-slave1-data:/home/jenkins
+      - /var/run/docker.sock:/var/run/docker.sock
+    env:
+      JENKINS_SLAVE_SSH_PUBKEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCq8Y8iyip7pOHRFSAeJYCKcyfj7eDmpa0kXs/42ncO4o8ZD0YREo5Dj0S/5UcaB9U1jozjVnoLqeeSreW7b7ZiaKKhGIemLPfEmvp98sfWLV4DF8H3JUQJjcoUOSyrerhRk85xBlWWXp23Mnpc+2Xtzplk20Obum+29t7ATwoOIj9q77fycVbAd6hcnFuDjJlASmOPyYfwJ7fIbd3+z77n/zR2nkdt5l/CNnAXGliBb8eO088OxhH2UT66QXZVVoRbi/PDIeh2q6Om22mP0ZflBhzGgOR1C1zlYzt8ErpFDC8oiVG3lZSVFlO/6NgJCOw3lxOW/PaMQ+AHFiaCHHb Jenkins agent key"
+    restart_policy: always
+  tags: [jenkins-slave]
+
