@@ -16,6 +16,6 @@ Vagrant.configure(2) do |config|
         v.memory = 2048
       end
       d.vm.provision :shell, path: "scripts/bootstrap_ansible.sh"
-      d.vm.provision :shell, inline: "PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/cicd.yml -i /vagrant/ansible/local"
+      d.vm.provision :shell, inline: "PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/cicd.yml -i /vagrant/ansible/inventory/local"
     end
 end

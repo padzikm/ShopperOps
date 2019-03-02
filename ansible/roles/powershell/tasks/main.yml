@@ -9,7 +9,7 @@
     update_cache: yes
   tags: [powershell]
   
-- name: install package
+- name: install
   apt:
     name: powershell
     state: present

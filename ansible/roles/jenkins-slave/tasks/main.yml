@@ -1,15 +1,43 @@
-- name: install slave container
+- name: get docker group entry
+  shell: getent group docker
+  register: dockerGroupEntry
+  tags: [jenkins-slave]
+
+- name: set docker groupId
+  set_fact:
+    dockerGroupId: "{{dockerGroupEntry.stdout.split(':')[2]}}"
+  tags: [jenkins-slave]
+
+- name: create temp dir
+  file:
+    path: "{{jenkinsSlaveTmpDir}}"
+    state: directory
+  tags: [jenkins-slave]
+
+- name: template dockerfile
+  template:
+    src: Dockerfile
+    dest: "{{jenkinsSlaveTmpDir}}/Dockerfile"
+  tags: [jenkins-slave]
+
+- name: build slave docker image
+  docker_image:
+    name: jenkins-slave
+    path: "{{jenkinsSlaveTmpDir}}"
+  tags: [jenkins-slave]
+
+- name: install
   docker_container:
-    name: jenkins-slave1
+    name: "jenkins-slave{{item}}"
     image: jenkins-slave
     detach: yes
     ports:
-      - "2220:22"
+      - "222{{item}}:22"
     volumes:
-      - jenkins-slave1-data:/home/jenkins
+      - "jenkins-slave{{item}}-data:/home/jenkins"
       - /var/run/docker.sock:/var/run/docker.sock
     env:
-      JENKINS_SLAVE_SSH_PUBKEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCq8Y8iyip7pOHRFSAeJYCKcyfj7eDmpa0kXs/42ncO4o8ZD0YREo5Dj0S/5UcaB9U1jozjVnoLqeeSreW7b7ZiaKKhGIemLPfEmvp98sfWLV4DF8H3JUQJjcoUOSyrerhRk85xBlWWXp23Mnpc+2Xtzplk20Obum+29t7ATwoOIj9q77fycVbAd6hcnFuDjJlASmOPyYfwJ7fIbd3+z77n/zR2nkdt5l/CNnAXGliBb8eO088OxhH2UT66QXZVVoRbi/PDIeh2q6Om22mP0ZflBhzGgOR1C1zlYzt8ErpFDC8oiVG3lZSVFlO/6NgJCOw3lxOW/PaMQ+AHFiaCHHb Jenkins agent key"
+      JENKINS_SLAVE_SSH_PUBKEY: "{{ jenkinsPublicSshKey }}"
     restart_policy: always
+  loop: "{{ range(1, jenkinsSlaveCount + 1) | list }}"
   tags: [jenkins-slave]
-

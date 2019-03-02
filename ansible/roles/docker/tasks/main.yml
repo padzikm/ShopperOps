@@ -1,4 +1,4 @@
-- name: uninstall old docker
+- name: uninstall old components
   apt:
     name: "{{ packages }}"
     state: absent
@@ -25,20 +25,20 @@
       - ca-certificates
   tags: [docker]
 
-- name: docker key
+- name: get repo key
   apt_key:
     url: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}/gpg"
     state: present
   tags: [docker]
 
-- name: docker repo
+- name: add repo
   apt_repository:
     repo: "deb https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }} {{ ansible_facts['distribution_release'] }} stable"
     state: present
     update_cache: yes
   tags: [docker]
 
-- name: install docker components
+- name: install components
   apt:
     name: "{{ packages }}"
     state: latest   
@@ -49,19 +49,13 @@
         - containerd.io
   tags: [docker]
 
-- name: install pip
-  apt: 
-    name: python-pip
-    state: present
-  tags: [python]
-
-- name: install docker sdk for python
+- name: install sdk for python
   pip:
     name: docker
     state: present
   tags: [docker]
 
-- name: copy docker config
+- name: copy config
   copy:
     src: "{{ docker_cfg_src }}"
     dest: "{{ docker_cfg_dest }}"

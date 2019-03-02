@@ -1,0 +1,11 @@
+- name: install pip
+  apt: 
+    name: python-pip
+    state: present
+  tags: [ansible]
+
+- name: install jmespath for json_query
+  pip:
+    name: jmespath
+    state: present
+  tags: [ansible]

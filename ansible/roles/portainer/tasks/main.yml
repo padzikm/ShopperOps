@@ -1,4 +1,4 @@
-- name: install docker
+- name: install
   docker_container:
     name: portainer
     image: portainer/portainer

@@ -1,0 +1,2 @@
+dockerComposeVersion: 1.23.2
+dockerComposeInstallPath: /usr/local/bin/docker-compose
