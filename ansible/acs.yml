@@ -2,5 +2,9 @@
   connection: local
   remote_user: vagrant
   become: true
+  pre_tasks:
+    - import_role: 
+        name: system
+        tasks_from: timedate
   roles:
     - ansible
