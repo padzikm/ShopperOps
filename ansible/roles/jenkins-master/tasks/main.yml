@@ -12,7 +12,7 @@
 
 - name: copy dockerfile context
   copy:
-    src: "{{item}}"
+    src: "{{item.src}}"
     dest: "{{jenkinsMasterTmpDir}}/{{item.dest}}"
   loop:
     - { src: 'executors.groovy', dest: 'executors.groovy' }
@@ -25,23 +25,33 @@
     path: "{{jenkinsMasterTmpDir}}"
   tags: [jenkins-master]
 
+- name: get docker group entry
+  shell: getent group docker
+  register: dockerGroupEntry
+  tags: [jenkins-master]
+
+- name: set docker groupId
+  set_fact:
+    dockerGroupId: "{{dockerGroupEntry.stdout.split(':')[2]}}"
+  tags: [jenkins-master]
+
 - name: install
   docker_container:
     name: jenkins-master
-    image: jenkinsci/blueocean
+    image: jenkins-master
     detach: yes
     groups:
-      - 998
+      - "{{dockerGroupId}}"
     ports:
       - 8080:8080
     volumes:
-      - jenkins-data:/var/jenkins_home
+      - jenkins-master-data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     restart_policy: always
   tags: [jenkins-master]
 
 - name: inspect volume
-  shell: docker volume inspect jenkins-data
+  shell: docker volume inspect jenkins-master-data
   register: jenkinsVolumeRes
   tags: [jenkins-master]
 
@@ -49,27 +59,58 @@
   set_fact: jenkinsVolumePath={{jenkinsVolumeRes.stdout | from_json | json_query('[0].Mountpoint')}}
   tags: [jenkins-master]
 
-- name: shared library is present
+- name: setup credentials
+  template:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    mode: 0777
+  loop:
+    - { src: "credentials.xml", dest: "{{jenkinsVolumePath}}/"}
+  tags: [jenkins-master]
+
+- name: setup nodes
+  template:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    mode: 0777
+    directory_mode: 0777
+  loop:
+    - { src: "nodes/docker1/config.xml", dest: "{{jenkinsVolumePath}}/nodes/docker1/"}
+  tags: [jenkins-master]
+
+- name: setup shared libraries
   copy:
     src: "{{item.src}}"
     dest: "{{item.dest}}"
+    mode: 0777
   loop:
-    - { src: "org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml", dest: "{{jenkinsVolumePath}}/org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml" }
+    - { src: "org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml", dest: "{{jenkinsVolumePath}}/" }
   tags: [jenkins-master]
 
-- name: jobs are present
+- name: setup jobs
   copy:
     src: "{{item.src}}"
     dest: "{{item.dest}}"
+    mode: 0777
+    directory_mode: 0777
   loop:
-    - { src: "jobs/frontend/config.xml", dest: "{{jenkinsVolumePath}}/jobs/frontend/config.xml" }
+    - { src: "jobs/frontend/config.xml", dest: "{{jenkinsVolumePath}}/jobs/frontend/" }
   tags: [jenkins-master]
 
-- name: list volume
-  find:
-    paths: "{{jenkinsVolumePath}}"
-  register: bla
-  tags: [jenkins-master]
+# - name: reloaded server
+#   uri:
+#     url: http://{{ ip }}:8080/reload
+#     method: POST
+#     status_code: 200,302
+#   when: jobs_result|changed
+#   ignore_errors: yes
+#   tags: [jenkins-master]
+
+# - name: list volume
+#   find:
+#     paths: "{{jenkinsVolumePath}}"
+#   register: bla
+#   tags: [jenkins-master]
 
 # - name: print volume files
 #   debug:

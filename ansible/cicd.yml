@@ -4,10 +4,16 @@
   become: true
   roles:
     - ansible
-    - powershell
-    - docker
-    - docker-compose
-    - registry
-    - portainer
+
+- hosts: localhost
+  connection: local
+  remote_user: vagrant
+  become: true
+  roles:
+    # - powershell
+    # - docker
+    # - docker-compose
+    # - registry
+    # - portainer
     - jenkins-master
-    - jenkins-slave
+    # - jenkins-slave
