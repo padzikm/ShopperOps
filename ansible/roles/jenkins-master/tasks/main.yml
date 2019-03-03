@@ -1,0 +1,77 @@
+- name: create temp dir
+  file:
+    path: "{{jenkinsMasterTmpDir}}"
+    state: directory
+  tags: [jenkins-master]
+
+- name: template dockerfile
+  template:
+    src: Dockerfile
+    dest: "{{jenkinsMasterTmpDir}}/Dockerfile"
+  tags: [jenkins-master]
+
+- name: copy dockerfile context
+  copy:
+    src: "{{item}}"
+    dest: "{{jenkinsMasterTmpDir}}/{{item.dest}}"
+  loop:
+    - { src: 'executors.groovy', dest: 'executors.groovy' }
+    - { src: 'default-user.groovy', dest: 'default-user.groovy' }
+  tags: [jenkins-master]
+
+- name: build docker image
+  docker_image:
+    name: jenkins-master
+    path: "{{jenkinsMasterTmpDir}}"
+  tags: [jenkins-master]
+
+- name: install
+  docker_container:
+    name: jenkins-master
+    image: jenkinsci/blueocean
+    detach: yes
+    groups:
+      - 998
+    ports:
+      - 8080:8080
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart_policy: always
+  tags: [jenkins-master]
+
+- name: inspect volume
+  shell: docker volume inspect jenkins-data
+  register: jenkinsVolumeRes
+  tags: [jenkins-master]
+
+- name: set jenkins volume fact
+  set_fact: jenkinsVolumePath={{jenkinsVolumeRes.stdout | from_json | json_query('[0].Mountpoint')}}
+  tags: [jenkins-master]
+
+- name: shared library is present
+  copy:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+  loop:
+    - { src: "org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml", dest: "{{jenkinsVolumePath}}/org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml" }
+  tags: [jenkins-master]
+
+- name: jobs are present
+  copy:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+  loop:
+    - { src: "jobs/frontend/config.xml", dest: "{{jenkinsVolumePath}}/jobs/frontend/config.xml" }
+  tags: [jenkins-master]
+
+- name: list volume
+  find:
+    paths: "{{jenkinsVolumePath}}"
+  register: bla
+  tags: [jenkins-master]
+
+# - name: print volume files
+#   debug:
+#     msg: "{{bla}}"
+#   tags: [vol]

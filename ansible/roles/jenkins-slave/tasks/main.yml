@@ -20,7 +20,7 @@
     dest: "{{jenkinsSlaveTmpDir}}/Dockerfile"
   tags: [jenkins-slave]
 
-- name: build slave docker image
+- name: build docker image
   docker_image:
     name: jenkins-slave
     path: "{{jenkinsSlaveTmpDir}}"
@@ -41,3 +41,8 @@
     restart_policy: always
   loop: "{{ range(1, jenkinsSlaveCount + 1) | list }}"
   tags: [jenkins-slave]
+
+- name: print jenkins var
+  debug:
+    msg: "{{jenkinsbla}}"
+  tags: [vol]

@@ -9,5 +9,5 @@
     - docker-compose
     - registry
     - portainer
-    - jenkins
+    - jenkins-master
     - jenkins-slave
