@@ -26,17 +26,16 @@
   register: jenkinsMasterBuildImageRes
   tags: [jenkins-master]
 
-- name: get docker group entry
-  shell: getent group docker
-  register: dockerGroupEntry
+- name: get docker group id
+  import_role:
+    name: system
+    tasks_from: groupid
+  vars:
+    groupName: docker
+    groupVar: dockerGroupId
   tags: [jenkins-master]
 
-- name: set docker groupId
-  set_fact:
-    dockerGroupId: "{{dockerGroupEntry.stdout.split(':')[2]}}"
-  tags: [jenkins-master]
-
-- name: install
+- name: install container
   docker_container:
     name: jenkins-master
     image: jenkins-master
@@ -51,13 +50,69 @@
     restart_policy: always
   tags: [jenkins-master]
 
-- name: inspect volume
-  shell: docker volume inspect jenkins-master-data
-  register: jenkinsVolumeRes
+- name: get container volume mount path
+  import_role:
+    name: docker
+    tasks_from: volume
+  vars:
+    volumeName: jenkins-master-data
+    volumeVar: jenkinsVolumePath
   tags: [jenkins-master]
 
-- name: set jenkins volume fact
-  set_fact: jenkinsVolumePath={{jenkinsVolumeRes.stdout | from_json | json_query('[0].Mountpoint')}}
+- name: wait for jenkins
+  uri:
+    url: "http://10.100.198.200:8080"
+    method: POST
+    user: "{{jenkinsAdminUser}}"
+    password: "{{jenkinsAdminPassword}}"
+    force_basic_auth: yes
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
+  tags: [jenkins-master]
+
+- name: install plugins
+  uri:
+    url: http://10.100.198.200:8080/pluginManager/installNecessaryPlugins
+    method: POST
+    user: "{{jenkinsAdminUser}}"
+    password: "{{jenkinsAdminPassword}}"
+    force_basic_auth: yes
+    headers:
+      Content-Type: text/xml
+    body: '<jenkins><install plugin="{{item}}@latest" /></jenkins>'
+    status_code: 200,302
+    creates: "{{jenkinsVolumePath}}/plugins/{{item}}"
+  loop:
+    - blueocean
+    - workflow-aggregator
+    - ws-cleanup
+    - build-pipeline-plugin
+    - matrix-auth
+    - pam-auth
+    - antisamy-markup-formatter
+    - xunit
+    - timestamper
+    - build-timeout
+    - ssh-slaves
+  tags: [jenkins-master]
+
+- name: wait for plugins
+  wait_for:
+    path: "{{jenkinsVolumePath}}/plugins/{{item}}"
+  loop:
+    - blueocean
+    - workflow-aggregator
+    - ws-cleanup
+    - build-pipeline-plugin
+    - matrix-auth
+    - pam-auth
+    - antisamy-markup-formatter
+    - xunit
+    - timestamper
+    - build-timeout
+    - ssh-slaves
   tags: [jenkins-master]
 
 - name: setup credentials
@@ -77,6 +132,7 @@
     directory_mode: 0777
   loop:
     - { src: "nodes/docker1/config.xml", dest: "{{jenkinsVolumePath}}/nodes/docker1/"}
+    - { src: "nodes/docker2/config.xml", dest: "{{jenkinsVolumePath}}/nodes/docker2/"}
   tags: [jenkins-master]
 
 - name: setup shared libraries
@@ -100,8 +156,14 @@
 
 - name: reload server
   uri:
-    url: http://{{inventory_hostname}}:8080/reload
+    url: http://10.100.198.200:8080/reload
     method: POST
-  when: jenkinsMasterBuildImageRes is changed
-  ignore_errors: yes
+    user: "{{jenkinsAdminUser}}"
+    password: "{{jenkinsAdminPassword}}"
+    force_basic_auth: yes
+    status_code: 200,302
+  register: result
+  until: result.status == 200 or result.status == 302
+  retries: 10
+  delay: 5
   tags: [jenkins-master]

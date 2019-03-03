@@ -1,4 +1,4 @@
-- name: install
+- name: install container
   docker_container:
     name: registry
     image: registry:2

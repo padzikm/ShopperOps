@@ -1,11 +1,10 @@
-- name: get docker group entry
-  shell: getent group docker
-  register: dockerGroupEntry
-  tags: [jenkins-slave]
-
-- name: set docker groupId
-  set_fact:
-    dockerGroupId: "{{dockerGroupEntry.stdout.split(':')[2]}}"
+- name: get docker group id
+  import_role:
+    name: system
+    tasks_from: groupid
+  vars:
+    groupName: docker
+    groupVar: dockerGroupId
   tags: [jenkins-slave]
 
 - name: create temp dir
@@ -26,7 +25,7 @@
     path: "{{jenkinsSlaveTmpDir}}"
   tags: [jenkins-slave]
 
-- name: install
+- name: install container
   docker_container:
     name: "jenkins-slave{{item}}"
     image: jenkins-slave
