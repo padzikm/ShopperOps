@@ -40,8 +40,3 @@
     restart_policy: always
   loop: "{{ range(1, jenkinsSlaveCount + 1) | list }}"
   tags: [jenkins-slave]
-
-- name: print jenkins var
-  debug:
-    msg: "{{jenkinsbla}}"
-  tags: [vol]

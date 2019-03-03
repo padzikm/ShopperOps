@@ -13,9 +13,11 @@ Vagrant.configure(2) do |config|
       d.vm.network "private_network", ip: "10.100.198.200"
       d.vm.provider "virtualbox" do |v|
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]            
-        v.memory = 2048
+        v.memory = 4096
       end
       d.vm.provision :shell, path: "scripts/bootstrap_ansible.sh"
+      d.vm.provision :shell, path: "sudo timedatectl set-ntp true"
+      d.vm.provision :shell, path: "sudo systemctl restart systemd-timesyncd.service"
       d.vm.provision :shell, inline: "PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/ansible.yml -i /vagrant/ansible/inventory/local"
       d.vm.provision :shell, inline: "PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/cicd.yml -i /vagrant/ansible/inventory/local"
     end
