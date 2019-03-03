@@ -1,0 +1,10 @@
+- name: enable timesyncd service
+  systemd:
+    name: systemd-timesyncd
+    state: restarted
+    enabled: true
+  tags: [system, system-timedate]
+
+- name: turn timedatectl set-ntp true
+  command: /usr/bin/timedatectl set-ntp true
+  tags: [system, system-timedate]
