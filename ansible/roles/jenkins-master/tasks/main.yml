@@ -23,6 +23,7 @@
   docker_image:
     name: jenkins-master
     path: "{{jenkinsMasterTmpDir}}"
+  register: jenkinsMasterBuildImageRes
   tags: [jenkins-master]
 
 - name: get docker group entry
@@ -97,22 +98,10 @@
     - { src: "jobs/frontend/config.xml", dest: "{{jenkinsVolumePath}}/jobs/frontend/" }
   tags: [jenkins-master]
 
-# - name: reloaded server
-#   uri:
-#     url: http://{{ ip }}:8080/reload
-#     method: POST
-#     status_code: 200,302
-#   when: jobs_result|changed
-#   ignore_errors: yes
-#   tags: [jenkins-master]
-
-# - name: list volume
-#   find:
-#     paths: "{{jenkinsVolumePath}}"
-#   register: bla
-#   tags: [jenkins-master]
-
-# - name: print volume files
-#   debug:
-#     msg: "{{bla}}"
-#   tags: [vol]
+- name: reload server
+  uri:
+    url: http://{{inventory_hostname}}:8080/reload
+    method: POST
+  when: jenkinsMasterBuildImageRes is changed
+  ignore_errors: yes
+  tags: [jenkins-master]
