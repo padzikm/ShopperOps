@@ -1,9 +1,27 @@
-# plugins:
-#   - git:
-#       id: 
-#       version:
-#   - 
+restartJenkinsEvent: "restart jenkins master"
 
-# nodes:
+dockerfileContext:
+  - executors.groovy
+  - default-user.groovy
 
-jenkinsbla: "adafdadsf"
+plugins:
+  - blueocean
+  - workflow-aggregator
+  - ws-cleanup
+  - build-pipeline-plugin
+  - matrix-auth
+  - pam-auth
+  - antisamy-markup-formatter
+  - xunit
+  - timestamper
+  - build-timeout
+  - ssh-slaves
+
+templates:
+  - { src: "credentials.xml", dest: "{{jenkinsVolumePath}}/" }
+  - { src: "nodes/docker1/config.xml", dest: "{{jenkinsVolumePath}}/nodes/docker1/" }
+  - { src: "nodes/docker2/config.xml", dest: "{{jenkinsVolumePath}}/nodes/docker2/" }
+
+files:
+  - { src: "org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml", dest: "{{jenkinsVolumePath}}/" }
+  - { src: "jobs/frontend/config.xml", dest: "{{jenkinsVolumePath}}/jobs/frontend/" }

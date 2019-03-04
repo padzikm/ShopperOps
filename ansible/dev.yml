@@ -9,7 +9,4 @@
     - powershell
     - docker
     - docker-compose
-    - registry
-    - portainer
-    - jenkins-master
-    - jenkins-slave
+    
