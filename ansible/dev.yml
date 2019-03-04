@@ -5,6 +5,9 @@
     - import_role: 
         name: system
         tasks_from: timedate
+    - import_role: 
+        name: system
+        tasks_from: hosts
   roles:
     - powershell
     - docker

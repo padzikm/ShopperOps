@@ -1,2 +1,10 @@
+shopperHosts:
+  - { ip: 10.100.199.200, domain: dev.shopper }
+  - { ip: 10.100.198.200, domain: cicd.shopper }
+  - { ip: 10.100.198.200, domain: registry.shopper }
+
 dockerComposeVersion: 1.23.2
 dockerComposeInstallPath: /usr/local/bin/docker-compose
+dockerRegistryDomain: "registry.shopper"
+dockerRegistryPort: 5000
+dockerRegistryAddress: "{{dockerRegistryDomain}}:{{dockerRegistryPort}}"
