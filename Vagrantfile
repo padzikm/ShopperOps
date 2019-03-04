@@ -3,7 +3,7 @@
 
 Vagrant.configure(2) do |config|
     if (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
-      config.vm.synced_folder ".", "/vagrant", mount_options: ["dmode=700,fmode=600"]
+      config.vm.synced_folder ".", "/vagrant", mount_options: ["dmode=775,fmode=774"]
     else
       config.vm.synced_folder ".", "/vagrant"
     end
@@ -21,7 +21,7 @@ Vagrant.configure(2) do |config|
     end
     config.vm.define "dev" do |d|
       if (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
-        config.vm.synced_folder "../app", "/app", mount_options: ["dmode=700,fmode=600"]
+        config.vm.synced_folder "../app", "/app", mount_options: ["dmode=775,fmode=774"]
       else
         config.vm.synced_folder "../app", "/app"
       end
