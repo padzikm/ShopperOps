@@ -17,11 +17,15 @@ plugins:
   - build-timeout
   - ssh-slaves
 
-templates:
-  - { src: "credentials.xml", dest: "{{jenkinsVolumePath}}/" }
-  - { src: "nodes/docker1/config.xml", dest: "{{jenkinsVolumePath}}/nodes/docker1/" }
-  - { src: "nodes/docker2/config.xml", dest: "{{jenkinsVolumePath}}/nodes/docker2/" }
+jobs:
+  - { src: "job.xml", jobName: "frontend", branch: "master", projectName: "frontend"}
+
+agents:
+  - { src: "agent.xml", agentName: "docker1", label: "docker", host: "{{inventory_hostname}}", port: "2221", executors: 2}
+  - { src: "agent.xml", agentName: "docker2", label: "docker", host: "{{inventory_hostname}}", port: "2222", executors: 2}
 
 files:
-  - { src: "org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml", dest: "{{jenkinsVolumePath}}/" }
-  - { src: "jobs/frontend/config.xml", dest: "{{jenkinsVolumePath}}/jobs/frontend/" }
+  - { src: "org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml", dest: "" }
+
+templates:
+  - { src: "credentials.xml", dest: "" }

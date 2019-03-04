@@ -59,7 +59,7 @@
 
 - name: wait for jenkins
   uri:
-    url: "http://10.100.198.200:{{jenkinsMasterPort}}"
+    url: "http://{{inventory_hostname}}:{{jenkinsMasterPort}}"
     method: POST
     user: "{{jenkinsAdminUser}}"
     password: "{{jenkinsAdminPassword}}"
@@ -72,7 +72,7 @@
 
 - name: install plugins
   uri:
-    url: "http://10.100.198.200:{{jenkinsMasterPort}}/pluginManager/installNecessaryPlugins"
+    url: "http://{{inventory_hostname}}:{{jenkinsMasterPort}}/pluginManager/installNecessaryPlugins"
     method: POST
     user: "{{jenkinsAdminUser}}"
     password: "{{jenkinsAdminPassword}}"
@@ -96,7 +96,7 @@
 - name: setup templates
   template:
     src: "{{item.src}}"
-    dest: "{{item.dest}}"
+    dest: "{{jenkinsVolumePath}}/"
     mode: 0777
     directory_mode: 0777
   loop: "{{templates}}"
@@ -107,10 +107,46 @@
 - name: setup files
   copy:
     src: "{{item.src}}"
-    dest: "{{item.dest}}"
+    dest: "{{jenkinsVolumePath}}/"
     mode: 0777
     directory_mode: 0777
   loop: "{{files}}"
+  notify:
+    - "{{restartJenkinsEvent}}"
+  tags: [jenkins-master]
+
+- name: create job directories
+  file:
+    path: "{{jenkinsVolumePath}}/{{item.jobName}}/"
+    state: directory
+  loop: "{{jobs}}"
+  tags: [jenkins-master]
+
+- name: setup jobs
+  template:
+    src: "{{item.src}}"
+    dest: "{{jenkinsVolumePath}}/{{item.jobName}}/config.xml"
+    mode: 0777
+    directory_mode: 0777
+  loop: "{{jobs}}"
+  notify:
+    - "{{restartJenkinsEvent}}"
+  tags: [jenkins-master]
+
+- name: create agent directories
+  file:
+    path: "{{jenkinsVolumePath}}/{{item.agentName}}/"
+    state: directory
+  loop: "{{agents}}"
+  tags: [jenkins-master]
+
+- name: setup agents
+  template:
+    src: "{{item.src}}"
+    dest: "{{jenkinsVolumePath}}/{{item.agentName}}/config.xml"
+    mode: 0777
+    directory_mode: 0777
+  loop: "{{agents}}"
   notify:
     - "{{restartJenkinsEvent}}"
   tags: [jenkins-master]
