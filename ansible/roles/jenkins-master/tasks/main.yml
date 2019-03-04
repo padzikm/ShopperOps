@@ -19,7 +19,7 @@
 
 - name: build docker image
   docker_image:
-    name: jenkins-master
+    name: "jenkins-master"
     path: "{{jenkinsMasterTmpDir}}"
   register: jenkinsMasterBuildImageRes
   tags: [jenkins-master]
@@ -36,7 +36,7 @@
 - name: install container
   docker_container:
     name: jenkins-master
-    image: jenkins-master
+    image: "jenkins-master"
     detach: yes
     groups:
       - "{{dockerGroupId}}"
