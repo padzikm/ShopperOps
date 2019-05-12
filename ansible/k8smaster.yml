@@ -1,0 +1,14 @@
+- hosts: k8smaster
+  remote_user: vagrant
+  become: true
+  pre_tasks:
+    - import_role:
+        name: system
+        tasks_from: swap
+      vars:
+        mode: "off"
+  roles:
+    - ansible
+    - docker
+    - k8s
+    - k8s-master

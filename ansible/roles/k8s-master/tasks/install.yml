@@ -1,0 +1,17 @@
+- name: check kubelet status
+  shell: ps -e | grep kubelet
+  ignore_errors: yes
+  register: kubeletIsRunning
+  tags: [k8s-master]
+
+- name: init kubeadm
+  command: "kubeadm init --pod-network-cidr={{network_cidr}} --apiserver-advertise-address={{inventory_hostname}}"
+  register: kubeadmInitOutput
+  when: kubeletIsRunning.stdout == ""
+  tags: [k8s-master]
+
+- name: init output
+  debug:
+    msg: "{{kubeadmInitOutput}}"
+  when: kubeletIsRunning.stdout == ""
+  tags: [k8s-master]

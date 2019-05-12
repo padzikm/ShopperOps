@@ -1,6 +1,17 @@
+- name: update apt
+  apt:
+    update_cache: yes
+  tags: [ansible]
+
 - name: install pip
   apt: 
     name: python-pip
+    state: present
+  tags: [ansible]
+
+- name: install pip3
+  apt: 
+    name: python3-pip
     state: present
   tags: [ansible]
 
@@ -9,3 +20,4 @@
     name: jmespath
     state: present
   tags: [ansible]
+  
