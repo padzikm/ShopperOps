@@ -13,7 +13,7 @@ Vagrant.configure(2) do |config|
       d.vm.network "private_network", ip: "10.100.198.200"
       d.vm.provider "virtualbox" do |v|
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]            
-        v.memory = 3096
+        v.memory = 2096
       end
       d.vm.provision :shell, path: "scripts/bootstrap_ansible.sh"
       d.vm.provision :shell, inline: "PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/acs.yml -i /vagrant/ansible/inventory/local -v"
@@ -35,7 +35,7 @@ Vagrant.configure(2) do |config|
       d.vm.network "private_network", ip: "10.100.199.200"
       d.vm.provider "virtualbox" do |v|
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]            
-        v.memory = 3096
+        v.memory = 2096
       end
       d.vm.provision :shell, path: "scripts/bootstrap_ansible.sh"
       d.vm.provision :shell, inline: "PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/acs.yml -i /vagrant/ansible/inventory/local -v"
@@ -53,7 +53,7 @@ Vagrant.configure(2) do |config|
         d.vm.network "private_network", ip: "10.100.196.20#{i}"
         d.vm.provider "virtualbox" do |v|
           v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]     
-          v.memory = 3024
+          v.memory = 2024
           v.cpus = 2
         end
       end
@@ -70,7 +70,7 @@ Vagrant.configure(2) do |config|
         d.vm.network "private_network", ip: "10.100.197.20#{i}"
         d.vm.provider "virtualbox" do |v|
           v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]     
-          v.memory = 3024
+          v.memory = 2024
           v.cpus = 2
         end
       end
