@@ -19,7 +19,6 @@
   get_url:
     url: https://docs.projectcalico.org/v3.7/manifests/calico.yaml
     dest: /tmp/calico_manifest.yml
-    force: yes
   tags: [k8s-master]
 
 - name: adjust calico manifest

@@ -34,20 +34,12 @@
 
 - name: prevent upgrades
   dpkg_selections:
-    name: kubelet
+    name: "{{item}}"
     selection: hold
-  tags: [k8s]
-
-- name: prevent upgrades
-  dpkg_selections:
-    name: kubeadm
-    selection: hold
-  tags: [k8s]
-
-- name: prevent upgrades
-  dpkg_selections:
-    name: kubectl
-    selection: hold
+  loop:
+    - kubelet
+    - kubeadm
+    - kubectl
   tags: [k8s]
 
 - name: ip in kubelet config
