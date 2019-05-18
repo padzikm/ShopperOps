@@ -11,6 +11,7 @@ Vagrant.configure(2) do |config|
       d.vm.box = "ubuntu/bionic64"
       d.vm.hostname = "cicd"
       d.vm.network "private_network", ip: "10.100.198.200"
+      d.disksize.size = "50GB"
       d.vm.provider "virtualbox" do |v|
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]            
         v.memory = 2096
