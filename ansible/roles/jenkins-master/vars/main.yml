@@ -1,4 +1,6 @@
 restartJenkinsEvent: "restart jenkins master"
+nodesFolder: "nodes"
+jobsFolder: "jobs"
 
 dockerfileContext:
   - executors.groovy
@@ -16,6 +18,7 @@ plugins:
   - timestamper
   - build-timeout
   - ssh-slaves
+  - kubernetes-cd
 
 jobs:
   - { src: "job.xml", jobName: "frontend", branch: "master", projectName: "frontend"}

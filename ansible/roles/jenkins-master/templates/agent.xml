@@ -1,6 +1,6 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <slave>
-  <name>docker-slave1</name>
+  <name>{{item.agentName}}</name>
   <description></description>
   <remoteFS>/home/jenkins</remoteFS>
   <numExecutors>{{item.executors}}</numExecutors>

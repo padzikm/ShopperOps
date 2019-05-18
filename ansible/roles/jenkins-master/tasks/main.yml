@@ -117,15 +117,16 @@
 
 - name: create job directories
   file:
-    path: "{{jenkinsVolumePath}}/{{item.jobName}}/"
+    path: "{{jenkinsVolumePath}}/{{jobsFolder}}/{{item.jobName}}/"
     state: directory
+    mode: 0777
   loop: "{{jobs}}"
   tags: [jenkins-master]
 
 - name: setup jobs
   template:
     src: "{{item.src}}"
-    dest: "{{jenkinsVolumePath}}/{{item.jobName}}/config.xml"
+    dest: "{{jenkinsVolumePath}}/{{jobsFolder}}/{{item.jobName}}/config.xml"
     mode: 0777
     directory_mode: 0777
   loop: "{{jobs}}"
@@ -135,15 +136,16 @@
 
 - name: create agent directories
   file:
-    path: "{{jenkinsVolumePath}}/{{item.agentName}}/"
+    path: "{{jenkinsVolumePath}}/{{nodesFolder}}/{{item.agentName}}/"
     state: directory
+    mode: 0777
   loop: "{{agents}}"
   tags: [jenkins-master]
 
 - name: setup agents
   template:
     src: "{{item.src}}"
-    dest: "{{jenkinsVolumePath}}/{{item.agentName}}/config.xml"
+    dest: "{{jenkinsVolumePath}}/{{nodesFolder}}/{{item.agentName}}/config.xml"
     mode: 0777
     directory_mode: 0777
   loop: "{{agents}}"
