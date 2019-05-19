@@ -5,6 +5,7 @@ shopperHosts:
 
 dockerComposeVersion: 1.23.2
 dockerComposeInstallPath: /usr/local/bin/docker-compose
-dockerRegistryDomain: "registry.shopper"
-dockerRegistryPort: 5000
-dockerRegistryAddress: "{{dockerRegistryDomain}}:{{dockerRegistryPort}}"
+dockerRegistryDomain: "10.100.198.200"
+dockerRegistryInsecurePort: 5080
+dockerRegistrySecurePort: 5443
+dockerInsecureRegistryAddress: "{{dockerRegistryDomain}}:{{dockerRegistryInsecurePort}}"

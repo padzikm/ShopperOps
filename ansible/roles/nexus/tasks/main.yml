@@ -1,0 +1,81 @@
+- name: install container
+  docker_container:
+    name: nexus
+    image: "sonatype/nexus3"
+    detach: yes
+    ports:
+      - "{{httpPort}}:8081"
+      - "{{dockerRegistryInsecurePort}}:{{dockerRegistryInsecurePort}}"
+    volumes:
+      - nexus-data:/nexus-data
+    restart_policy: always
+  tags: [nexus]
+
+- name: create scripts
+  template:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+  loop: "{{scripts}}"
+  tags: [nexus]
+
+- name: get stored scripts
+  uri:
+    url: "http://{{inventory_hostname}}:{{httpPort}}{{baseUrl}}v1/script"
+    method: GET
+    user: "{{defaultUserName}}"
+    password: "{{defaultUserPass}}"
+    force_basic_auth: yes
+  register: storedScripts
+  tags: [nexus]
+
+- name: update existing scripts
+  uri:
+    url: "http://{{inventory_hostname}}:{{httpPort}}{{baseUrl}}v1/script/{{item.scriptName}}"
+    method: PUT
+    src: "{{item.dest}}"
+    remote_src: yes
+    body_format: json
+    user: "{{defaultUserName}}"
+    password: "{{defaultUserPass}}"
+    force_basic_auth: yes
+    status_code: 204
+  loop: "{{scripts}}"
+  when: item.scriptName in (storedScripts | json_query('json[*].name'))
+  tags: [nexus]
+
+- name: send new scripts
+  uri:
+    url: "http://{{inventory_hostname}}:{{httpPort}}{{baseUrl}}v1/script"
+    method: POST
+    src: "{{item.dest}}"
+    remote_src: yes
+    body_format: json
+    user: "{{defaultUserName}}"
+    password: "{{defaultUserPass}}"
+    force_basic_auth: yes
+    status_code: 204
+  loop: "{{scripts}}"
+  when: item.scriptName not in (storedScripts | json_query('json[*].name'))
+  tags: [nexus]
+
+- name: get stored repositories
+  uri:
+    url: "http://{{inventory_hostname}}:{{httpPort}}{{baseUrl}}v1/repositories"
+    method: GET
+    user: "{{defaultUserName}}"
+    password: "{{defaultUserPass}}"
+    force_basic_auth: yes
+  register: storedRepositories
+  tags: [nexus]
+
+- name: execute scripts
+  uri:
+    url: "http://{{inventory_hostname}}:{{httpPort}}{{baseUrl}}v1/script/{{item.scriptName}}/run"
+    method: POST
+    body_format: json
+    user: "{{defaultUserName}}"
+    password: "{{defaultUserPass}}"
+    force_basic_auth: yes
+  loop: "{{scripts}}"
+  when: item.repoName is defined and item.repoName not in (storedRepositories | json_query('json[*].name'))
+  tags: [nexus]

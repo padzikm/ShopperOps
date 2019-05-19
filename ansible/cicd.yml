@@ -12,7 +12,7 @@
     - powershell
     - docker
     - docker-compose
-    - registry
+    - nexus
     - portainer
     - jenkins-master
     - jenkins-slave
