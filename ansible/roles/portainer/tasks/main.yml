@@ -7,6 +7,6 @@
       - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data portainer/portainer
+      - portainer-data:/data
     restart_policy: always
   tags: [portainer]

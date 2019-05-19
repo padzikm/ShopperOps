@@ -1,6 +1,6 @@
 - name: restart jenkins master
   uri:
-    url: "http://{{inventory_hostname}}:{{jenkinsMasterPort}}/restart"
+    url: "http://{{inventory_hostname}}:{{jenkinsMasterInsecurePort}}/restart"
     method: POST
     user: "{{jenkinsAdminUser}}"
     password: "{{jenkinsAdminPassword}}"

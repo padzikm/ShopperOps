@@ -1,4 +1,3 @@
-httpPort: 8081
 baseUrl: /service/rest/
 defaultUserName: admin
 defaultUserPass: admin123

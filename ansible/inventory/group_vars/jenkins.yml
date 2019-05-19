@@ -1,8 +1,6 @@
-
 jenkinsAdminUser: admin
 jenkinsAdminPassword: admin
 jenkinsSlaveCount: 2
-jenkinsMasterPort: 8080
 # ssh-keygen -t rsa -C "Jenkins agent key" -f "jenkinsAgent_rsa"
 jenkinsPublicSshKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7pWtVgvRalFHOR3uYlCkncPglFlUQKbTq9j7hSBZfORhA8W/+xZGtAv+TVLuLOkP8Q1CKmxbVHqKJVSW16luaajlUQKLp1d+ztkAjNXtSJsRrBXQbQUMrHoz+JDjda0h2hXw7reWdjD4aZiuJ7J2WU9j4d1Hmga+/MJirBZgysKfVOyqavU/wN8ZpeEBBOS7Gs6k4XA3p8uG5kfLZopCJGRTAz/LFmeHfVxu+jgIV958b9fV7DVK4ofglFGv2bnufd1M/dmbVOSkTdj3Ji348l5c98chSVQ/DP0yN03SBPbdBAY1mTlrPuw66IOFKNqI5RNw7i691n/9xh7phfdhD Jenkins agent key"
 jenkinsPrivateSshKey: |

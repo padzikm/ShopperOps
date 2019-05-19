@@ -41,7 +41,7 @@
     groups:
       - "{{dockerGroupId}}"
     ports:
-      - "{{jenkinsMasterPort}}:8080"
+      - "{{jenkinsMasterInsecurePort}}:8080"
     volumes:
       - jenkins-master-data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
@@ -59,7 +59,7 @@
 
 - name: wait for jenkins
   uri:
-    url: "http://{{inventory_hostname}}:{{jenkinsMasterPort}}"
+    url: "http://{{inventory_hostname}}:{{jenkinsMasterInsecurePort}}"
     method: POST
     user: "{{jenkinsAdminUser}}"
     password: "{{jenkinsAdminPassword}}"
@@ -72,7 +72,7 @@
 
 - name: install plugins
   uri:
-    url: "http://{{inventory_hostname}}:{{jenkinsMasterPort}}/pluginManager/installNecessaryPlugins"
+    url: "http://{{inventory_hostname}}:{{jenkinsMasterInsecurePort}}/pluginManager/installNecessaryPlugins"
     method: POST
     user: "{{jenkinsAdminUser}}"
     password: "{{jenkinsAdminPassword}}"
