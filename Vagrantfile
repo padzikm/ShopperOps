@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
       end
       d.vm.provision :shell, path: "scripts/bootstrap_ansible.sh"
       d.vm.provision :shell, inline: "PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/acs.yml -i /vagrant/ansible/inventory/local -v"
-      d.vm.provision :shell, inline: "PYTHONUNBUFFERED=1 cd /vagrant/ansible && ansible-playbook /vagrant/ansible/cicd.yml -i /vagrant/ansible/inventory/cicd -v"
+      # d.vm.provision :shell, inline: "PYTHONUNBUFFERED=1 cd /vagrant/ansible && ansible-playbook /vagrant/ansible/cicd.yml -i /vagrant/ansible/inventory/cicd -v"
     end
     config.vm.define "dev" do |d|
       if (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
