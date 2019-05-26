@@ -29,7 +29,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
-    namespace: default
+    namespace: {{nfsClientNamespace}}
 roleRef:
   kind: ClusterRole
   name: nfs-client-provisioner-runner

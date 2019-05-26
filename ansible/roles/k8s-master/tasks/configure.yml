@@ -42,7 +42,7 @@
   tags: [k8s-master, k8s-calico]
 
 - name: setup calico
-  shell: kubectl apply -f /tmp/calico_manifest.yml
+  shell: kubectl apply -f /tmp/calico_manifest.yaml
   become: yes
   become_user: vagrant
   tags: [k8s-master, k8s-calico]

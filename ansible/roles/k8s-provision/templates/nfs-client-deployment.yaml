@@ -8,11 +8,14 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: nfs-client-provisioner
-  namespace: {{nfsClientNamespace}}
+  labels: 
+    nfs-client-provisioner: "nfs-client-provisioner"
 spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: nfs-client-provisioner
+  capacity:
+    storage: 10Mi
   mountOptions:
     - rw
     - hard
@@ -31,6 +34,12 @@ spec:
   storageClassName: nfs-client-provisioner
   accessModes:
     - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+  selector:
+    matchLabels:
+      nfs-client-provisioner: "nfs-client-provisioner"
 ---
 kind: Deployment
 apiVersion: extensions/v1beta1
