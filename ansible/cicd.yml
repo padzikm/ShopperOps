@@ -1,13 +1,13 @@
 - hosts: all
   remote_user: vagrant
   become: true
-  # pre_tasks:
-  #   - import_role: 
-  #       name: system
-  #       tasks_from: timedate
+  pre_tasks:
+    - import_role: 
+        name: system
+        tasks_from: timedate
   roles:
-    #- docker
+    - docker
     - nexus
-    #- chartmuseum
-    #- nfs-server
-    #- nginx
+    - chartmuseum
+    - nfs-server
+    - nginx
