@@ -1,3 +1,4 @@
+ansible_ssh_host_key_checking: False
 shopperHosts:
   - { ip: 10.100.199.200, domain: dev.shopper }
   - { ip: 10.100.198.200, domain: cicd.shopper }
@@ -6,13 +7,15 @@ shopperHosts:
 dockerComposeVersion: 1.23.2
 dockerComposeInstallPath: /usr/local/bin/docker-compose
 dockerRegistryDomain: "10.100.198.200"
-dockerRegistryInsecurePort: 5080
+dockerRegistryInsecurePort: 5000
 dockerRegistrySecurePort: 5443
 dockerInsecureRegistryAddress: "{{dockerRegistryDomain}}:{{dockerRegistryInsecurePort}}"
 jenkinsMasterInsecurePort: 8080
 nexusInsecurePort: 8081
 nexusRegistryUserName: "admin" 
-nexusRegistryUserPass: "admin123"
+nexusRegistryUserPass: "admin"
 chartmuseumInsecurePort: 8082
 chartmuseumUserName: "admin"
 chartmuseumUserPass: "admin"
+nfsServer: 10.100.198.200
+nfsExportedPath: "/nfs-k8s"

@@ -18,7 +18,7 @@ plugins:
   - timestamper
   - build-timeout
   - ssh-slaves
-  - kubernetes-cd
+  - kubernetes
 
 jobs:
   - { src: "job.xml", jobName: "frontend", branch: "master", projectName: "frontend"}

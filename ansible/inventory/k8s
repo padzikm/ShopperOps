@@ -1,5 +1,9 @@
+[k8s:children]
+k8smaster
+k8snode
+
 [k8smaster]
-10.100.196.201 ansible_python_interpreter=/usr/bin/python3
+10.100.199.200 ansible_python_interpreter=/usr/bin/python3
 
 [k8snode]
 10.100.197.201 ansible_python_interpreter=/usr/bin/python3

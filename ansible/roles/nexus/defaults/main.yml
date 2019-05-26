@@ -1,3 +1,2 @@
 baseUrl: /service/rest/
-defaultUserName: admin
-defaultUserPass: admin123
+defaultAdminPass: admin123

@@ -1,0 +1,13 @@
+- name: copy nfs-client deploy files
+  copy:
+    src: "{{item}}"
+    dest: "/tmp/k8s-nfs-client/"
+  loop: "{{nfsClientFiles}}"
+  tags: [k8s-provision, k8s-nfs-client]
+
+- name: deploy nfs-client
+  shell: "kubectl apply -f /tmp/k8s-nfs-client/{{item}}"
+  become: yes
+  become_user: vagrant
+  loop: "{{nfsClientFiles}}"
+  tags: [k8s-provision, k8s-nfs-client]

@@ -15,28 +15,51 @@
   template:
     src: "{{item.src}}"
     dest: "{{item.dest}}"
-  loop: "{{scripts}}"
+  loop: "{{allScripts}}"
   tags: [nexus]
 
 - name: wait until app is ready
   uri:
     url: "http://{{inventory_hostname}}:{{nexusInsecurePort}}"
     method: GET
-    user: "{{defaultUserName}}"
-    password: "{{defaultUserPass}}"
-    force_basic_auth: yes
   register: result
   until: result.status == 200
   retries: 10
-  delay: 9
+  delay: 10
   tags: [nexus]
+
+- name: log with default password
+  uri:
+    url: "http://{{inventory_hostname}}:{{nexusInsecurePort}}{{baseUrl}}v1/script"
+    method: GET
+    user: "{{nexusRegistryUserName}}"
+    password: "{{defaultAdminPass}}"
+    force_basic_auth: yes
+  register: defaultPasswordResult
+  ignore_errors: yes
+  tags: [nexus]
+
+- name: set default as access password
+  set_fact:
+    nexusUserPass: "{{defaultAdminPass}}"
+  when: defaultPasswordResult.status == 200
+  tags: [nexus]
+
+- name: set already changed as access password
+  set_fact:
+    nexusUserPass: "{{nexusRegistryUserPass}}"
+  when: defaultPasswordResult.status != 200
+  tags: [nexus]
+
+- debug:
+    msg: "{{nexusUserPass}}"
 
 - name: get stored scripts
   uri:
     url: "http://{{inventory_hostname}}:{{nexusInsecurePort}}{{baseUrl}}v1/script"
     method: GET
-    user: "{{defaultUserName}}"
-    password: "{{defaultUserPass}}"
+    user: "{{nexusRegistryUserName}}"
+    password: "{{nexusUserPass}}"
     force_basic_auth: yes
   register: storedScripts
   tags: [nexus]
@@ -48,11 +71,11 @@
     src: "{{item.dest}}"
     remote_src: yes
     body_format: json
-    user: "{{defaultUserName}}"
-    password: "{{defaultUserPass}}"
+    user: "{{nexusRegistryUserName}}"
+    password: "{{nexusUserPass}}"
     force_basic_auth: yes
     status_code: 204
-  loop: "{{scripts}}"
+  loop: "{{allScripts}}"
   when: item.scriptName in (storedScripts | json_query('json[*].name'))
   tags: [nexus]
 
@@ -63,11 +86,11 @@
     src: "{{item.dest}}"
     remote_src: yes
     body_format: json
-    user: "{{defaultUserName}}"
-    password: "{{defaultUserPass}}"
+    user: "{{nexusRegistryUserName}}"
+    password: "{{nexusUserPass}}"
     force_basic_auth: yes
     status_code: 204
-  loop: "{{scripts}}"
+  loop: "{{allScripts}}"
   when: item.scriptName not in (storedScripts | json_query('json[*].name'))
   tags: [nexus]
 
@@ -75,20 +98,31 @@
   uri:
     url: "http://{{inventory_hostname}}:{{nexusInsecurePort}}{{baseUrl}}v1/repositories"
     method: GET
-    user: "{{defaultUserName}}"
-    password: "{{defaultUserPass}}"
+    user: "{{nexusRegistryUserName}}"
+    password: "{{nexusUserPass}}"
     force_basic_auth: yes
   register: storedRepositories
   tags: [nexus]
 
-- name: execute scripts
+- name: create repos
   uri:
     url: "http://{{inventory_hostname}}:{{nexusInsecurePort}}{{baseUrl}}v1/script/{{item.scriptName}}/run"
     method: POST
     body_format: json
-    user: "{{defaultUserName}}"
-    password: "{{defaultUserPass}}"
+    user: "{{nexusRegistryUserName}}"
+    password: "{{nexusUserPass}}"
     force_basic_auth: yes
-  loop: "{{scripts}}"
+  loop: "{{createRepoScripts}}"
   when: item.repoName is defined and item.repoName not in (storedRepositories | json_query('json[*].name'))
+  tags: [nexus]
+
+- name: change admin password
+  uri:
+    url: "http://{{inventory_hostname}}:{{nexusInsecurePort}}{{baseUrl}}v1/script/{{item.scriptName}}/run"
+    method: POST
+    body_format: json
+    user: "{{nexusRegistryUserName}}"
+    password: "{{nexusUserPass}}"
+    force_basic_auth: yes
+  loop: "{{passwordChangeScripts}}"
   tags: [nexus]

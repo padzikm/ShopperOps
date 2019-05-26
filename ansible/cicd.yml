@@ -1,19 +1,13 @@
 - hosts: all
   remote_user: vagrant
   become: true
-  pre_tasks:
-    - import_role: 
-        name: system
-        tasks_from: timedate
-    - import_role: 
-        name: system
-        tasks_from: hosts
+  # pre_tasks:
+  #   - import_role: 
+  #       name: system
+  #       tasks_from: timedate
   roles:
-    - powershell
-    - docker
-    - docker-compose
+    #- docker
     - nexus
-    - chartmuseum
-    - portainer
-    - jenkins-master
-    - jenkins-slave
+    #- chartmuseum
+    #- nfs-server
+    #- nginx

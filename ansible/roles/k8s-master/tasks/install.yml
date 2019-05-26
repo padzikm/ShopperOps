@@ -4,8 +4,14 @@
   register: kubeletIsRunning
   tags: [k8s-master]
 
+- name: template config
+  template:
+    src: initConfig.yaml
+    dest: "{{tmpFolder}}/"
+  tags: [k8s-master]
+
 - name: init kubeadm
-  command: "kubeadm init --pod-network-cidr={{network_cidr}} --apiserver-advertise-address={{inventory_hostname}}"
+  command: "kubeadm init --config={{tmpFolder}}/initConfig.yaml"
   register: kubeadmInitOutput
   when: kubeletIsRunning.stdout == ""
   tags: [k8s-master]

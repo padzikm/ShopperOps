@@ -18,18 +18,31 @@
 - name: get calico manifest
   get_url:
     url: https://docs.projectcalico.org/v3.7/manifests/calico.yaml
-    dest: /tmp/calico_manifest.yml
+    dest: /tmp/calico_manifest.yaml
   tags: [k8s-master]
 
-- name: adjust calico manifest
+- name: set calico network_cidr
   replace:
-    path: /tmp/calico_manifest.yml
+    path: /tmp/calico_manifest.yaml
     regexp: '192.168.0.0/16'
     replace: '{{network_cidr}}'
-  tags: [k8s-master]
+  tags: [k8s-master, k8s-calico]
+
+- name: get indent for calico env
+  shell: "grep 'value: \"autodetect\"' /tmp/calico_manifest.yaml | grep \" \" -o | wc -l"
+  register: indentVar
+  tags: [k8s-master, k8s-calico]
+
+- name: set calico ip autodetection
+  blockinfile:
+    path: /tmp/calico_manifest.yaml
+    state: present
+    insertafter: 'value: "autodetect"'
+    block: "{{calicoConfiguration | indent(((indentVar.stdout | int)-3), True)}}"
+  tags: [k8s-master, k8s-calico]
 
 - name: setup calico
   shell: kubectl apply -f /tmp/calico_manifest.yml
   become: yes
   become_user: vagrant
-  tags: [k8s-master]
+  tags: [k8s-master, k8s-calico]
