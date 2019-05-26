@@ -4,6 +4,34 @@ metadata:
   name: nfs-client-provisioner
   namespace: {{nfsClientNamespace}}
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-client-provisioner
+  namespace: {{nfsClientNamespace}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nfs-client-provisioner
+  mountOptions:
+    - rw
+    - hard
+    - bg
+    - intr
+  nfs:
+    path: "{{nfsExportedPath}}"
+    server: "{{nfsServer}}"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-client-provisioner
+  namespace: {{nfsClientNamespace}}
+spec:
+  storageClassName: nfs-client-provisioner
+  accessModes:
+    - ReadWriteOnce
+---
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
@@ -34,6 +62,5 @@ spec:
               value: "{{nfsExportedPath}}"
       volumes:
         - name: nfs-client-root
-          nfs:
-            server: "{{nfsServer}}"
-            path: "{{nfsExportedPath}}"
+          persistentVolumeClaim:
+            claimName: nfs-client-provisioner

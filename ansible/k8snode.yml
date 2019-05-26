@@ -1,6 +1,7 @@
 - hosts: k8snode
   remote_user: vagrant
   become: true
+  tags: [k8s-node-setup]
   pre_tasks:
     - import_role:
         name: system

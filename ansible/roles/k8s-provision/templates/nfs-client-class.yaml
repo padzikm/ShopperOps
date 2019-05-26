@@ -7,3 +7,7 @@ metadata:
 provisioner: {{nfsProvisionerName}} # or choose another name, must match deployment's env PROVISIONER_NAME'
 parameters:
   archiveOnDelete: "false"
+mountOptions:
+  - hard
+  - bg
+  - intr

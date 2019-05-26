@@ -1,0 +1,6 @@
+- hosts: k8smaster
+  remote_user: vagrant
+  become: true
+  tags: [k8s-provision-setup]
+  roles:
+    - k8s-provision
