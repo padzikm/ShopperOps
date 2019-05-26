@@ -2,14 +2,14 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-    config.vm.define "cicd" do |d|
+    config.vm.define "dev" do |d|
       if (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
         d.vm.synced_folder ".", "/vagrant", mount_options: ["dmode=700,fmode=600"]
       else
         d.vm.synced_folder ".", "/vagrant"
       end
       d.vm.box = "ubuntu/bionic64"
-      d.vm.hostname = "cicd"
+      d.vm.hostname = "dev"
       d.vm.network "private_network", ip: "10.100.198.200"
       d.disksize.size = "50GB"
       d.vm.provider "virtualbox" do |v|
