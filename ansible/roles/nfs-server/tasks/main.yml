@@ -29,7 +29,7 @@
 - name: export shared folder
   lineinfile:
     path: /etc/exports
-    line: "{{nfsExportedPath}} *(rw,sync,no_subtree_check,insecure)"
+    line: "{{nfsExportedPath}} *(rw,sync,no_root_squash,no_subtree_check,insecure)"
     state: present
   tags: [nfs, nfs-server]
 

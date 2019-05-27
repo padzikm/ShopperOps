@@ -6,6 +6,31 @@
     group: vagrant
   tags: [jenkins-x]
 
+- name: download jx
+  get_url:
+    url: https://github.com/jenkins-x/jx/releases/download/v2.0.180/jx-linux-amd64.tar.gz
+    dest: /home/vagrant/.jx/bin/jx.tar.gz
+  tags: [jenkins-x]
+
+- name: extract jx
+  unarchive:
+    src: /home/vagrant/.jx/bin/jx.tar.gz
+    remote_src: yes
+    dest: /home/vagrant/.jx/bin
+    group: vagrant
+    owner: vagrant
+  tags: [jenkins-x]
+
+- name: add jx to path
+  lineinfile:
+    path: /home/vagrant/.bashrc
+    line: export PATH=$PATH:~/.jx/bin
+    state: present
+    create: yes
+    owner: vagrant
+    group: vagrant
+  tags: [jenkins-x]
+
 - name: update cache
   apt:
     update_cache: yes

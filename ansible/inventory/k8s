@@ -3,10 +3,10 @@ k8smaster
 k8snode
 
 [k8smaster]
-10.100.199.200 ansible_python_interpreter=/usr/bin/python3
+192.168.56.90 ansible_python_interpreter=/usr/bin/python3
 
 [k8snode]
-10.100.197.201 ansible_python_interpreter=/usr/bin/python3
-10.100.197.202 ansible_python_interpreter=/usr/bin/python3
-10.100.197.203 ansible_python_interpreter=/usr/bin/python3
-10.100.197.204 ansible_python_interpreter=/usr/bin/python3
+192.168.56.91 ansible_python_interpreter=/usr/bin/python3
+192.168.56.92 ansible_python_interpreter=/usr/bin/python3
+192.168.56.93 ansible_python_interpreter=/usr/bin/python3
+192.168.56.94 ansible_python_interpreter=/usr/bin/python3

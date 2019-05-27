@@ -10,7 +10,7 @@ Vagrant.configure(2) do |config|
       end
       d.vm.box = "ubuntu/bionic64"
       d.vm.hostname = "dev"
-      d.vm.network "private_network", ip: "10.100.198.200"
+      d.vm.network "private_network", ip: "192.168.56.89"
       d.disksize.size = "50GB"
       d.vm.provider "virtualbox" do |v|
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]            
@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
       end
       d.vm.box = "ubuntu/bionic64"
       d.vm.hostname = "k8s-master"
-      d.vm.network "private_network", ip: "10.100.199.200"
+      d.vm.network "private_network", ip: "192.168.56.90"
       d.vm.provider "virtualbox" do |v|
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]     
         v.memory = 3096
@@ -43,7 +43,7 @@ Vagrant.configure(2) do |config|
         end
         d.vm.box = "ubuntu/bionic64"
         d.vm.hostname = "k8s-node-#{i}"
-        d.vm.network "private_network", ip: "10.100.197.20#{i}"
+        d.vm.network "private_network", ip: "192.168.56.9#{i}"
         d.vm.provider "virtualbox" do |v|
           v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]     
           v.memory = 3096
