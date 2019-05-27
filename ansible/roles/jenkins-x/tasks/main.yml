@@ -1,0 +1,47 @@
+- name: create directory
+  file:
+    path: /home/vagrant/.jx/bin
+    state: directory
+    owner: vagrant
+    group: vagrant
+  tags: [jenkins-x]
+
+- name: update cache
+  apt:
+    update_cache: yes
+  tags: [jenkins-x]
+
+- name: add repo key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+  tags: [jenkins-x]
+
+- name: add repo
+  apt_repository:
+    repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+    update_cache: yes
+  tags: [jenkins-x]
+
+- name: update cache
+  apt:
+    update_cache: yes
+  tags: [jenkins-x]
+
+- name: install components
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - kubectl
+  tags: [jenkins-x]
+
+- name: .kube directory exists
+  file:
+    path: /home/vagrant/.kube
+    state: directory
+    owner: vagrant
+    group: vagrant
+  tags: [jenkins-x]

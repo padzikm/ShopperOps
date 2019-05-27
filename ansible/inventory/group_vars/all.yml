@@ -10,6 +10,7 @@ dockerRegistryDomain: "10.100.198.200"
 dockerRegistryInsecurePort: 5000
 dockerRegistrySecurePort: 5443
 dockerInsecureRegistryAddress: "{{dockerRegistryDomain}}:{{dockerRegistryInsecurePort}}"
+dockerInsecureRegistrySubnet: "10.96.0.0/12"
 jenkinsMasterInsecurePort: 8080
 nexusInsecurePort: 8081
 nexusRegistryUserName: "admin" 
