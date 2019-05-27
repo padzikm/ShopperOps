@@ -6,3 +6,9 @@ nfsClientFiles:
 
 nfsClientNamespace: nfs-client
 nfsProvisionerName: nfs-provisioner
+
+metallbFiles:
+  - metallb.yaml
+  - metallb-config.yaml
+
+metallbIpRange: 192.168.56.10-192.168.56.50

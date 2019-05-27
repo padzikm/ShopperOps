@@ -1,13 +1,3 @@
-- name: template nfs-client deploy files
-  template:
-    src: "{{item}}"
-    dest: "/tmp/{{item}}"
-  loop: "{{nfsClientFiles}}"
-  tags: [k8s-provision, k8s-nfs-client]
+- import_tasks: nfs-client.yml
 
-- name: deploy nfs-client
-  shell: "kubectl apply -f /tmp/{{item}}"
-  become: yes
-  become_user: vagrant
-  loop: "{{nfsClientFiles}}"
-  tags: [k8s-provision, k8s-nfs-client]
+- import_tasks: metallb.yml
