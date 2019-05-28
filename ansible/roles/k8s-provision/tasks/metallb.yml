@@ -8,6 +8,6 @@
 - name: deploy metallb
   shell: "kubectl apply -f /tmp/{{item}}"
   become: yes
-  become_user: vagrant
+  become_user: "{{local_user}}"
   loop: "{{metallbFiles}}"
   tags: [k8s-provision, k8s-metallb]

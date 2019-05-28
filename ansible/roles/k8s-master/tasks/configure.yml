@@ -1,18 +1,18 @@
 - name: .kube directory exists
   file:
-    path: /home/vagrant/.kube
+    path: "/home/{{local_user}}/.kube"
     state: directory
-    owner: vagrant
-    group: vagrant
+    owner: "{{local_user}}"
+    group: "{{local_user}}"
   tags: [k8s-master]
 
 - name: copy config
   copy:
     src: /etc/kubernetes/admin.conf
-    dest: /home/vagrant/.kube/config
+    dest: "/home/{{local_user}}/.kube/config"
     remote_src: yes
-    owner: vagrant
-    group: vagrant
+    owner: "{{local_user}}"
+    group: "{{local_user}}"
   tags: [k8s-master]
 
 - name: get calico manifest
@@ -44,5 +44,5 @@
 - name: setup calico
   shell: kubectl apply -f /tmp/calico_manifest.yaml
   become: yes
-  become_user: vagrant
+  become_user: "{{local_user}}"
   tags: [k8s-master, k8s-calico]

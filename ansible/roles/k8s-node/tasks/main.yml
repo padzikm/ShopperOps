@@ -3,7 +3,7 @@
   register: clusterNodes
   delegate_to: "{{groups['k8smaster'][0]}}"
   become: yes
-  become_user: vagrant
+  become_user: "{{local_user}}"
   tags: [k8s-node]
 
 - name: join command generate

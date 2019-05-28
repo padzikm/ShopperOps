@@ -3,7 +3,7 @@ shopperHosts:
   - { ip: 192.168.56.89, domain: dev.shopper }
   - { ip: 192.168.56.89, domain: cicd.shopper }
   - { ip: 192.168.56.89, domain: registry.shopper }
-
+local_user: "{{ansible_user}}"
 dockerComposeVersion: 1.23.2
 dockerComposeInstallPath: /usr/local/bin/docker-compose
 dockerRegistryDomain: "192.168.56.89"

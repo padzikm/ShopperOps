@@ -1,34 +1,34 @@
 - name: create directory
   file:
-    path: /home/vagrant/.jx/bin
+    path: "/home/{{local_user}}/.jx/bin"
     state: directory
-    owner: vagrant
-    group: vagrant
+    owner: "{{local_user}}"
+    group: "{{local_user}}"
   tags: [jenkins-x]
 
 - name: download jx
   get_url:
     url: https://github.com/jenkins-x/jx/releases/download/v2.0.180/jx-linux-amd64.tar.gz
-    dest: /home/vagrant/.jx/bin/jx.tar.gz
+    dest: "/home/{{local_user}}/.jx/bin/jx.tar.gz"
   tags: [jenkins-x]
 
 - name: extract jx
   unarchive:
-    src: /home/vagrant/.jx/bin/jx.tar.gz
+    src: "/home/{{local_user}}/.jx/bin/jx.tar.gz"
     remote_src: yes
-    dest: /home/vagrant/.jx/bin
-    group: vagrant
-    owner: vagrant
+    dest: "/home/{{local_user}}/.jx/bin"
+    group: "{{local_user}}"
+    owner: "{{local_user}}"
   tags: [jenkins-x]
 
 - name: add jx to path
   lineinfile:
-    path: /home/vagrant/.bashrc
+    path: "/home/{{local_user}}/.bashrc"
     line: export PATH=$PATH:~/.jx/bin
     state: present
     create: yes
-    owner: vagrant
-    group: vagrant
+    owner: "{{local_user}}"
+    group: "{{local_user}}"
   tags: [jenkins-x]
 
 - name: update cache
@@ -65,8 +65,8 @@
 
 - name: .kube directory exists
   file:
-    path: /home/vagrant/.kube
+    path: "/home/{{local_user}}/.kube"
     state: directory
-    owner: vagrant
-    group: vagrant
+    owner: "{{local_user}}"
+    group: "{{local_user}}"
   tags: [jenkins-x]
